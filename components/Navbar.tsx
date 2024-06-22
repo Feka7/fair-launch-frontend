@@ -1,0 +1,42 @@
+"use client";
+import { ConnectKitButton } from "connectkit";
+import Link from "next/link";
+
+export default function Navbar() {
+  return (
+    <>
+      <div className="navbar max-w-7xl mx-auto">
+        <div className="navbar-start">Fair launch</div>
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1">
+            <li>
+              <Link href="#">Explore</Link>
+            </li>
+            <li>
+              <Link href="#">Create</Link>
+            </li>
+            <li>
+              <Link href="#">Manage</Link>
+            </li>
+          </ul>
+        </div>
+        <div className="navbar-end">
+          <ConnectKitButton />
+        </div>
+      </div>
+      <div className="flex justify-center lg:hidden">
+        <ul className="menu menu-horizontal px-1">
+          <li>
+            <Link href="#">Explore</Link>
+          </li>
+          <li>
+            <Link href="#">Create</Link>
+          </li>
+          <li>
+            <Link href="#">Manage</Link>
+          </li>
+        </ul>
+      </div>
+    </>
+  );
+}
