@@ -2,6 +2,7 @@ import { Web3Provider } from "@/components/Web3Provider";
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,12 +15,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Web3Provider>
-          <Navbar />
-          <div className="max-w-7xl mx-auto p-2">{children}</div>
-        </Web3Provider>
+        <ThemeProvider
+          defaultTheme="cmyk"
+          enableColorScheme
+          themes={["cmyk", "night"]}
+        >
+          <Web3Provider>
+            <Navbar />
+            <div className="max-w-7xl mx-auto p-2">{children}</div>
+          </Web3Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

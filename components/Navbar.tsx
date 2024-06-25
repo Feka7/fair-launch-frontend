@@ -1,6 +1,7 @@
 "use client";
 import { ConnectKitButton } from "connectkit";
 import Link from "next/link";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 export default function Navbar() {
   return (
@@ -20,7 +21,8 @@ export default function Navbar() {
             </li>
           </ul>
         </div>
-        <div className="navbar-end">
+        <div className="navbar-end space-x-3">
+          <ThemeSwitcher />
           <ConnectKitButton />
         </div>
       </div>

@@ -14,7 +14,7 @@ const contractAddress = process.env
 export default function Page() {
   const account = useAccount();
 
-  if (!account)
+  if (!account.address)
     return (
       <>
         <NoAccount />
