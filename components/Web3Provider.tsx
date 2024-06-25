@@ -3,16 +3,21 @@ import { WagmiProvider, createConfig, http } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import { tenderly_fork_chain } from "@/lib/tenderly";
 
-const config = createConfig(
+export const config = createConfig(
   getDefaultConfig({
     // Your dApps chains
-    chains: [baseSepolia],
+    chains: [
+      //baseSepolia
+      tenderly_fork_chain
+    ],
     transports: {
       // RPC URL for each chain
-      [baseSepolia.id]: http(
-        process.env.NEXT_PUBLIC_ALCHEMY_URL,
-      ),
+      // [baseSepolia.id]: http(
+      //   process.env.NEXT_PUBLIC_ALCHEMY_URL,
+      // ),
+      [tenderly_fork_chain.id]: http(),
     },
     ssr: true,
     // Required API Keys
