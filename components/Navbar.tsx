@@ -11,7 +11,7 @@ export default function Navbar() {
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
             <li>
-              <Link href="#">Explore</Link>
+              <Link href="/explore">Explore</Link>
             </li>
             <li>
               <Link href="/new-campaign">Create</Link>

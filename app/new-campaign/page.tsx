@@ -138,12 +138,12 @@ function CreateCampaignForm() {
 
   const createCampaign = async () => {
     const campaignParams = {
-      poolSupply: BigInt(poolSupply),
+      poolSupply: parseUnits(poolSupply.toString(), 18),
       startTimestamp: BigInt(startTimestampUint),
       endTimestamp: BigInt(endTimestampUint),
       unvestingStreamStart: BigInt(unvestingStreamStartUint),
       unvestingStreamEnd: BigInt(unvestingStreamEndUint),
-      rewardSupply: BigInt(rewardSupply),
+      rewardSupply: parseUnits(rewardSupply.toString(), 18),
       tokenAddress: tokenAddress as `0x${string}`,
       campaignURI: campaignURI,
     };
