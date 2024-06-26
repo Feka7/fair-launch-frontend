@@ -205,3 +205,52 @@ export const withdrawFundsFunction = [{
     "stateMutability": "nonpayable",
     "type": "function"
 }] as const;
+
+export const rewardsClaimedEvent = [{
+    "anonymous": false,
+    "inputs": [
+        {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "campaignID",
+            "type": "uint256"
+        },
+        {
+            "indexed": true,
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+        },
+        {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+        }
+    ],
+    "name": "RewardsClaimed",
+    "type": "event"
+}] as const;
+
+export const terminatedCampaignEvent = [{
+    "anonymous": false,
+    "inputs": [
+        {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "campaignID",
+            "type": "uint256"
+        },
+        {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "raised",
+            "type": "uint256"
+        }
+    ],
+    "name": "CampaignTerminated",
+    "type": "event"
+}] as const;
+
+export const hippodromeAddress = process.env
+  .NEXT_PUBLIC_HIPPODROME_ADDRESS as `0x${string}`;

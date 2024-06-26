@@ -1,15 +1,12 @@
 "use client";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { createCampaignFunction } from "@/lib/hippodrome";
+import { createCampaignFunction, hippodromeAddress } from "@/lib/hippodrome";
 import NoAccount from "@/components/NoAccount";
 import { erc20Abi, formatUnits, isHex, parseUnits } from "viem";
 import { readContract, waitForTransactionReceipt } from "wagmi/actions";
 import { config } from "@/components/Web3Provider";
 import { twMerge } from "tailwind-merge";
-
-const contractAddress = process.env
-  .NEXT_PUBLIC_HIPPODROME_ADDRESS as `0x${string}`; // Sostituisci con l'indirizzo reale del contratto
 
 export default function Page() {
   const account = useAccount();
@@ -105,7 +102,7 @@ function CreateCampaignForm() {
         address: tokenAddress,
         abi: erc20Abi,
         functionName: "approve",
-        args: [contractAddress, parseUnits(totalSupplyRequired.toString(), 18)],
+        args: [hippodromeAddress, parseUnits(totalSupplyRequired.toString(), 18)],
       });
       const transactionReceipt = await waitForTransactionReceipt(config, {
         hash: tx,
@@ -125,7 +122,7 @@ function CreateCampaignForm() {
       abi: erc20Abi,
       address: tokenAddress,
       functionName: "allowance",
-      args: [address, contractAddress],
+      args: [address, hippodromeAddress],
     });
     setAllowance(parseInt(formatUnits(result, 18)));
   };
@@ -144,7 +141,7 @@ function CreateCampaignForm() {
     try {
       isLoading(true);
       const tx = await writeContractAsync({
-        address: contractAddress,
+        address: hippodromeAddress,
         abi: createCampaignFunction,
         functionName: "createCampaign",
         args: [campaignParams],
