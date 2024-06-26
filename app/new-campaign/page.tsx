@@ -1,12 +1,19 @@
 "use client";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { createCampaignFunction, hippodromeAddress } from "@/lib/hippodrome";
+import { hippodromeAbi, hippodromeAddress } from "@/lib/hippodrome";
 import NoAccount from "@/components/NoAccount";
-import { erc20Abi, formatUnits, isHex, parseUnits } from "viem";
+import {
+  ContractFunctionExecutionError,
+  erc20Abi,
+  formatUnits,
+  isHex,
+  parseUnits,
+} from "viem";
 import { readContract, waitForTransactionReceipt } from "wagmi/actions";
 import { config } from "@/components/Web3Provider";
 import { twMerge } from "tailwind-merge";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const account = useAccount();
@@ -45,7 +52,6 @@ function CreateCampaignForm() {
   const [allowance, setAllowance] = useState<number>(0);
   const [loading, isLoading] = useState<boolean>(false);
   const [tx, setTx] = useState<string>("");
-
   const totalSupplyRequired = parseFloat(poolSupply) + parseFloat(rewardSupply);
 
   useEffect(() => {
@@ -102,7 +108,10 @@ function CreateCampaignForm() {
         address: tokenAddress,
         abi: erc20Abi,
         functionName: "approve",
-        args: [hippodromeAddress, parseUnits(totalSupplyRequired.toString(), 18)],
+        args: [
+          hippodromeAddress,
+          parseUnits(totalSupplyRequired.toString(), 18),
+        ],
       });
       const transactionReceipt = await waitForTransactionReceipt(config, {
         hash: tx,
@@ -142,7 +151,7 @@ function CreateCampaignForm() {
       isLoading(true);
       const tx = await writeContractAsync({
         address: hippodromeAddress,
-        abi: createCampaignFunction,
+        abi: hippodromeAbi,
         functionName: "createCampaign",
         args: [campaignParams],
       });
@@ -152,6 +161,20 @@ function CreateCampaignForm() {
       if (transactionReceipt.status === "success") {
         setStep(3);
         setTx(transactionReceipt.transactionHash);
+        setPoolSupply("");
+        setStartTimestamp("");
+        setEndTimestamp("");
+        setUnvestingStreamStart("");
+        setUnvestingStreamEnd("");
+        setRewardSupply("");
+        setTokenAddress("");
+        setCampaignURI("");
+      }
+    } catch (e) {
+      if (e instanceof ContractFunctionExecutionError) {
+        console.log(e.shortMessage);
+        toast.error(e.shortMessage)
+        ref.current?.close();
       }
     } finally {
       isLoading(false);
@@ -241,7 +264,9 @@ function CreateCampaignForm() {
           </div>
           <div className="form-control col-span-2">
             <label className="label">
-              <span className="label-text">Campaign URI <span className="text-xs">{"(optional)"}</span></span>
+              <span className="label-text">
+                Campaign URI <span className="text-xs">{"(optional)"}</span>
+              </span>
             </label>
             <input
               type="text"

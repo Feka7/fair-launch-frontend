@@ -1,256 +1,636 @@
-export const calculateContributionPercentageFunction = [{
-    "inputs": [
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        },
-        {
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        }
-    ],
-    "name": "calculateContributionPercentage",
-    "outputs": [
-        {
-            "internalType": "uint256",
-            "name": "percentage",
-            "type": "uint256"
-        }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-}] as const;
-
-export const claimRewardsFunction = [{
-    "inputs": [
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        }
-    ],
-    "name": "claimRewards",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-}] as const;
-
-export const createCampaignFunction = [{
-    "inputs": [
-        {
-            "components": [
-                {
-                    "internalType": "uint96",
-                    "name": "poolSupply",
-                    "type": "uint96"
-                },
-                {
-                    "internalType": "uint88",
-                    "name": "startTimestamp",
-                    "type": "uint88"
-                },
-                {
-                    "internalType": "uint88",
-                    "name": "endTimestamp",
-                    "type": "uint88"
-                },
-                {
-                    "internalType": "uint88",
-                    "name": "unvestingStreamStart",
-                    "type": "uint88"
-                },
-                {
-                    "internalType": "uint88",
-                    "name": "unvestingStreamEnd",
-                    "type": "uint88"
-                },
-                {
-                    "internalType": "uint96",
-                    "name": "rewardSupply",
-                    "type": "uint96"
-                },
-                {
-                    "internalType": "address",
-                    "name": "tokenAddress",
-                    "type": "address"
-                },
-                {
-                    "internalType": "string",
-                    "name": "campaignURI",
-                    "type": "string"
-                }
-            ],
-            "internalType": "struct IHippodromeTypes.CampaignParams",
-            "name": "campaignParams",
-            "type": "tuple"
-        }
-    ],
-    "name": "createCampaign",
-    "outputs": [
-        {
-            "internalType": "uint128",
-            "name": "accountID",
-            "type": "uint128"
-        }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-}] as const;
-
-export const fundCampaignFunction = [{
-    "inputs": [
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        },
-        {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-        }
-    ],
-    "name": "fundCampaign",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-}] as const;
-
-export const getAvailableUserRewardsFunction = [{
-    "inputs": [
-        {
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        },
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        }
-    ],
-    "name": "getAvailableUserRewards",
-    "outputs": [
-        {
-            "internalType": "uint256",
-            "name": "rewards",
-            "type": "uint256"
-        }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-}] as const;
-
-export const getUserRewardStatusFunction = [{
-    "inputs": [
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        },
-        {
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        }
-    ],
-    "name": "getUserRewardStatus",
-    "outputs": [
-        {
-            "internalType": "uint256",
-            "name": "totalRewards",
-            "type": "uint256"
-        },
-        {
-            "internalType": "uint256",
-            "name": "claimed",
-            "type": "uint256"
-        }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-}] as const;
-
-export const resolveCampaignFunction = [{
-    "inputs": [
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        }
-    ],
-    "name": "resolveCampaign",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-}] as const;
-
-export const withdrawFundsFunction = [{
-    "inputs": [
-        {
-            "internalType": "uint128",
-            "name": "campaignID",
-            "type": "uint128"
-        },
-        {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-        }
-    ],
-    "name": "withdrawFunds",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-}] as const;
-
-export const rewardsClaimedEvent = [{
-    "anonymous": false,
-    "inputs": [
-        {
-            "indexed": true,
-            "internalType": "uint256",
-            "name": "campaignID",
-            "type": "uint256"
-        },
-        {
-            "indexed": true,
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        },
-        {
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-        }
-    ],
-    "name": "RewardsClaimed",
-    "type": "event"
-}] as const;
-
-export const terminatedCampaignEvent = [{
-    "anonymous": false,
-    "inputs": [
-        {
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "campaignID",
-            "type": "uint256"
-        },
-        {
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "raised",
-            "type": "uint256"
-        }
-    ],
-    "name": "CampaignTerminated",
-    "type": "event"
-}] as const;
+export const hippodromeAbi = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_synthCoreProxy",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_fUSDC",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_wrapModule",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_sUSDC",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_aerodromePoolFactory",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_aerodromeRouter",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "CampaignAlreadyExist",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "CampaignNotActive",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "RewardsAlreadyClaimed",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "unlockTime",
+				"type": "uint256"
+			}
+		],
+		"name": "WithdrawLocked",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "founder",
+				"type": "address"
+			},
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "founder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint96",
+						"name": "poolSupply",
+						"type": "uint96"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "currentStake",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "poolAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "raised",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint88",
+						"name": "startTimestamp",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint88",
+						"name": "endTimestamp",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint88",
+						"name": "unvestStart",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint88",
+						"name": "unvestEnd",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint96",
+						"name": "rewardSupply",
+						"type": "uint96"
+					},
+					{
+						"internalType": "string",
+						"name": "campaignURI",
+						"type": "string"
+					}
+				],
+				"indexed": false,
+				"internalType": "struct IHippodromeTypes.Campaign",
+				"name": "campaign",
+				"type": "tuple"
+			}
+		],
+		"name": "CampaignCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "raised",
+				"type": "uint256"
+			}
+		],
+		"name": "CampaignTerminated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "FundsAdded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "FundsWithdrawed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "RewardsClaimed",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "_campaignCounter",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			},
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "calculateContributionPercentage",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "percentage",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			}
+		],
+		"name": "claimRewards",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint96",
+						"name": "poolSupply",
+						"type": "uint96"
+					},
+					{
+						"internalType": "uint88",
+						"name": "startTimestamp",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint88",
+						"name": "endTimestamp",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint88",
+						"name": "unvestingStreamStart",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint88",
+						"name": "unvestingStreamEnd",
+						"type": "uint88"
+					},
+					{
+						"internalType": "uint96",
+						"name": "rewardSupply",
+						"type": "uint96"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "campaignURI",
+						"type": "string"
+					}
+				],
+				"internalType": "struct IHippodromeTypes.CampaignParams",
+				"name": "campaignParams",
+				"type": "tuple"
+			}
+		],
+		"name": "createCampaign",
+		"outputs": [
+			{
+				"internalType": "uint128",
+				"name": "accountID",
+				"type": "uint128"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "fundCampaign",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			}
+		],
+		"name": "getAvailableUserRewards",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "rewards",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			}
+		],
+		"name": "getCampaign",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint96",
+				"name": "",
+				"type": "uint96"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint88",
+				"name": "",
+				"type": "uint88"
+			},
+			{
+				"internalType": "uint88",
+				"name": "",
+				"type": "uint88"
+			},
+			{
+				"internalType": "uint88",
+				"name": "",
+				"type": "uint88"
+			},
+			{
+				"internalType": "uint88",
+				"name": "",
+				"type": "uint88"
+			},
+			{
+				"internalType": "uint96",
+				"name": "",
+				"type": "uint96"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			}
+		],
+		"name": "getCampaignAccountId",
+		"outputs": [
+			{
+				"internalType": "uint128",
+				"name": "accountID",
+				"type": "uint128"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "campaignID",
+				"type": "uint256"
+			}
+		],
+		"name": "getCampaignTokenInfos",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "symbol",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			},
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "getUserRewardStatus",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "totalUserRewards",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "claimed",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			}
+		],
+		"name": "getUserStake",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "data",
+				"type": "bytes"
+			}
+		],
+		"name": "onERC721Received",
+		"outputs": [
+			{
+				"internalType": "bytes4",
+				"name": "",
+				"type": "bytes4"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			}
+		],
+		"name": "resolveCampaign",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint128",
+				"name": "campaignID",
+				"type": "uint128"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdrawFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+] as const;
 
 export const hippodromeAddress = process.env
   .NEXT_PUBLIC_HIPPODROME_ADDRESS as `0x${string}`;

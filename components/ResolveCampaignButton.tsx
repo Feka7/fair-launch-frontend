@@ -1,8 +1,7 @@
-"use client"
+"use"
 import {
-    hippodromeAddress,
-    resolveCampaignFunction,
-    terminatedCampaignEvent,
+  hippodromeAbi,
+    hippodromeAddress
   } from "@/lib/hippodrome";
   import { useAccount, useWatchContractEvent, useWriteContract, useReadContract } from "wagmi";
   
@@ -15,7 +14,7 @@ import {
     const { writeContractAsync, isPending, data } = useWriteContract();
     useWatchContractEvent({
       address: hippodromeAddress,
-      abi: terminatedCampaignEvent,
+      abi: hippodromeAbi,
       eventName: "CampaignTerminated",
       onLogs(logs) {
         console.log("New logs!", logs);
@@ -33,7 +32,7 @@ import {
         className="btn btn-primary disabled:bg-primary disabled:text-primary-content"
         onClick={async () =>
           await writeContractAsync({
-            abi: resolveCampaignFunction,
+            abi: hippodromeAbi,
             address: hippodromeAddress,
             functionName: "resolveCampaign",
             args: [BigInt(id)],

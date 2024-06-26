@@ -4,6 +4,7 @@ import { baseSepolia } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { tenderly_fork_chain } from "@/lib/tenderly";
+import { Toaster } from "react-hot-toast";
 
 export const config = createConfig(
   getDefaultConfig({
@@ -37,10 +38,20 @@ const queryClient = new QueryClient();
 
 export const Web3Provider = ({ children }: { children: React.ReactNode}) => {
   return (
+    <>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider>{children}</ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
+    <Toaster
+        toastOptions={{
+          style: {
+            maxWidth: "fit-content",
+          },
+          position: "bottom-center"
+        }}
+      />
+    </>
   );
 };

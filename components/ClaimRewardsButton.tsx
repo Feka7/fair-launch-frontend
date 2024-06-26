@@ -1,8 +1,7 @@
 "use client"
 import {
   hippodromeAddress,
-  claimRewardsFunction,
-  rewardsClaimedEvent,
+  hippodromeAbi
 } from "@/lib/hippodrome";
 import { useAccount, useWatchContractEvent, useWriteContract } from "wagmi";
 
@@ -15,7 +14,7 @@ export default function ClaimRewardsButton({ id }: Props) {
   const { writeContractAsync, isPending, data } = useWriteContract();
   useWatchContractEvent({
     address: hippodromeAddress,
-    abi: rewardsClaimedEvent,
+    abi: hippodromeAbi,
     eventName: "RewardsClaimed",
     onLogs(logs) {
       console.log("New logs!", logs);
@@ -27,7 +26,7 @@ export default function ClaimRewardsButton({ id }: Props) {
       className="btn btn-primary disabled:bg-primary disabled:text-primary-content"
       onClick={async () =>
         await writeContractAsync({
-          abi: claimRewardsFunction,
+          abi: hippodromeAbi,
           address: hippodromeAddress,
           functionName: "claimRewards",
           args: [BigInt(id)],
