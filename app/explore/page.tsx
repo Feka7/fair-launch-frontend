@@ -2,8 +2,10 @@
 
 import AddFundsModal from "@/components/AddFundsModal";
 import NoAccount from "@/components/NoAccount";
+import Symbol from "@/components/Symbol";
+import WithdrawFundsModal from "@/components/WithdrawFundsModal";
 import { hippodromeAbi, hippodromeAddress } from "@/lib/hippodrome";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 
 export default function Page() {
@@ -51,6 +53,7 @@ function Explore() {
               <th>End unvest</th>
               <th>Founder</th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -87,30 +90,21 @@ function Campaign({ id }: { id: number }) {
       <th>{data[2].slice(0, 5) + "..." + data[2].slice(-5)}</th>
       <td className="text-right">
         {formatUnits(data[1], 18)}
-        <Symbol id={1} />
+        <Symbol id={id} />
       </td>
-      <td className="text-right">{data[3].toString()} $</td>
-      <td className="text-right">{data[5].toString()} $</td>
+      <td className="text-right">{formatUnits(data[3], 6)} $</td>
+      <td className="text-right">{formatUnits(data[5], 18)}$</td>
       <td>{data[6].toString()}</td>
       <td>{data[7].toString()}</td>
       <td className="text-right">
       {formatUnits(data[10], 18)}
-        <Symbol id={1} />
+        <Symbol id={id} />
       </td>
       <td>{data[8].toString()}</td>
       <td>{data[9].toString()}</td>
       <td>{data[0].slice(0, 5) + "..." + data[0].slice(-5)}</td>
       <td><AddFundsModal id={id} /></td>
+      <td><WithdrawFundsModal id={id} /></td>
     </tr>
   );
-}
-
-function Symbol({ id }: { id: number }) {
-  const { data } = useReadContract({
-    abi: hippodromeAbi,
-    address: hippodromeAddress,
-    functionName: "getCampaignTokenInfos",
-    args: [BigInt(id)],
-  });
-  return <span className="ml-1">{data?.[1]}</span>;
 }
