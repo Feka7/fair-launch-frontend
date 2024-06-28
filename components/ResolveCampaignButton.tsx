@@ -9,7 +9,7 @@ type Props = {
   id: number;
 };
 
-export default function ClaimRewardsButton({ id }: Props) {
+export default function ResolveCampaignButton({ id }: Props) {
   const { isConnected } = useAccount();
   const { writeContractAsync, isPending } = useWriteContract();
 

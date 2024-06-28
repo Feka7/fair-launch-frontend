@@ -15,6 +15,7 @@ import {
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { waitForTransactionReceipt } from "wagmi/actions";
 import { config } from "./Web3Provider";
+import { twMerge } from "tailwind-merge";
 
 export default function AddFundsModal({ id }: { id: number }) {
   const account = useAccount();
@@ -39,6 +40,12 @@ export default function AddFundsModal({ id }: { id: number }) {
     functionName: "getCampaign",
     args: [BigInt(id)],
   });
+  const { refetch: refetchUserStake } = useReadContract({
+    abi: hippodromeAbi,
+    address: hippodromeAddress,
+    functionName: "getUserStake",
+    args: [account.address!, BigInt(id)],
+  });
   const ref = useRef<HTMLDialogElement>(null);
   const handlePerc = (perc: number) => {
     if (data) {
@@ -61,6 +68,7 @@ export default function AddFundsModal({ id }: { id: number }) {
       });
       refetch();
       refetchCampaign();
+      refetchUserStake();
       toast.success(
         <>
           Funds deposited!{" "}
@@ -113,7 +121,7 @@ export default function AddFundsModal({ id }: { id: number }) {
     : false;
   return (
     <>
-      <button className="btn" onClick={() => ref.current?.showModal()}>
+      <button className="btn btn-primary btn-sm" onClick={() => ref.current?.showModal()}>
         Add
       </button>
       <dialog ref={ref} className="modal">
@@ -165,24 +173,24 @@ export default function AddFundsModal({ id }: { id: number }) {
           <div className="modal-action">
             {allowedDeposit ? (
               <button
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full disabled:bg-primary disabled:text-primary-content"
                 onClick={() => handleDeposit()}
                 disabled={loading}
               >
                 {loading ? (
-                  <span className="loading loading-dots loading-md disabled:bg-primary disabled:text-primary-content"></span>
+                  <span className="loading loading-dots loading-md"></span>
                 ) : (
                   <>Deposit</>
                 )}
               </button>
             ) : (
               <button
-                className="btn btn-primary w-full"
+                className={twMerge("btn btn-primary w-full", loading && "disabled:bg-primary disabled:text-primary-content")}
                 onClick={() => handleApprove()}
                 disabled={loading || !value}
               >
                 {loading ? (
-                  <span className="loading loading-dots loading-md disabled:bg-primary disabled:text-primary-content"></span>
+                  <span className="loading loading-dots loading-md"></span>
                 ) : (
                   <>Approve</>
                 )}

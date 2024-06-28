@@ -304,7 +304,7 @@ function CreateCampaignForm() {
               </p>
               <button
                 onClick={approveToken}
-                className="btn btn-primary mt-4 self-center disabled:bg-primary disabled:text-primary-content"
+                className="btn btn-primary w-full mt-4 disabled:bg-primary disabled:text-primary-content"
                 disabled={loading}
               >
                 {loading ? (
@@ -347,7 +347,7 @@ function CreateCampaignForm() {
               </div>
               <button
                 onClick={createCampaign}
-                className="btn btn-primary mt-4 self-center disabled:bg-primary disabled:text-primary-content"
+                className="btn btn-primary mt-4 w-full disabled:bg-primary disabled:text-primary-content"
                 disabled={loading}
               >
                 {loading ? (

@@ -1,11 +1,10 @@
 "use client";
 
-import AddFundsModal from "@/components/AddFundsModal";
 import NoAccount from "@/components/NoAccount";
 import Symbol from "@/components/Symbol";
-import WithdrawFundsModal from "@/components/WithdrawFundsModal";
 import { hippodromeAbi, hippodromeAddress } from "@/lib/hippodrome";
-import { formatUnits, parseUnits } from "viem";
+import Link from "next/link";
+import { formatUnits } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 
 export default function Page() {
@@ -20,8 +19,8 @@ export default function Page() {
 
   return (
     <>
-      <div>
-        <h2 className="text-2xl font-bold">Campaigns</h2>
+      <div className="mt-8">
+        <h2 className="text-3xl font-bold">Campaigns</h2>
         <Explore />
       </div>
     </>
@@ -34,9 +33,9 @@ function Explore() {
     address: hippodromeAddress,
     functionName: "_campaignCounter",
   });
-  if (isPending) return <div className="flex min-h-screen skeleton"></div>;
+  if (isPending) return <div className="flex min-h-screen skeleton mt-4"></div>;
   return (
-    <div>
+    <div className="mt-4">
       <div className="overflow-x-auto">
         <table className="table">
           {/* head */}
@@ -46,12 +45,9 @@ function Explore() {
               <th>Supply</th>
               <th>Current Stake</th>
               <th>Raised</th>
-              <th>Start date</th>
-              <th>End date</th>
               <th>Rewards</th>
+              <th>End date</th>
               <th>Start unvest</th>
-              <th>End unvest</th>
-              <th>Founder</th>
               <th></th>
               <th></th>
             </tr>
@@ -94,17 +90,13 @@ function Campaign({ id }: { id: number }) {
       </td>
       <td className="text-right">{formatUnits(data[3], 6)} $</td>
       <td className="text-right">{formatUnits(data[5], 18)}$</td>
-      <td>{data[6].toString()}</td>
-      <td>{data[7].toString()}</td>
       <td className="text-right">
       {formatUnits(data[10], 18)}
         <Symbol id={id} />
       </td>
-      <td>{data[8].toString()}</td>
-      <td>{data[9].toString()}</td>
-      <td>{data[0].slice(0, 5) + "..." + data[0].slice(-5)}</td>
-      <td><AddFundsModal id={id} /></td>
-      <td><WithdrawFundsModal id={id} /></td>
+      <td>{new Date(Number(data[7]) * 1000).toISOString().replace("T", " ").slice(0, -5)}</td>
+      <td>{new Date(Number(data[8]) * 1000).toISOString().replace("T", " ").slice(0, -5)}</td>
+      <td><Link className="btn btn-xs btn-primary" href={"/campaign?id="+id}>View</Link></td>
     </tr>
   );
 }

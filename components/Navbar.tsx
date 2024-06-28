@@ -17,7 +17,7 @@ export default function Navbar() {
               <Link href="/new-campaign">Create</Link>
             </li>
             <li>
-              <Link href="#">Manage</Link>
+              <Link href="/manage">Manage</Link>
             </li>
           </ul>
         </div>

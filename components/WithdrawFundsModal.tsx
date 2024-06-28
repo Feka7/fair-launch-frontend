@@ -91,7 +91,7 @@ import {
       : false;
     return (
       <>
-        <button className="btn" onClick={() => ref.current?.showModal()}>
+        <button className="btn bg-primary btn-sm" onClick={() => ref.current?.showModal()}>
           Withdraw
         </button>
         <dialog ref={ref} className="modal">
@@ -142,12 +142,12 @@ import {
             </label>
             <div className="modal-action">
                 <button
-                  className="btn btn-primary w-full"
+                  className="btn btn-primary w-full disabled:bg-primary disabled:text-primary-content"
                   onClick={() => handleWithdraw()}
                   disabled={loading || !allowedWithdraw}
                 >
                   {loading ? (
-                    <span className="loading loading-dots loading-md disabled:bg-primary disabled:text-primary-content"></span>
+                    <span className="loading loading-dots loading-md"></span>
                   ) : (
                     <>Withdraw</>
                   )}
