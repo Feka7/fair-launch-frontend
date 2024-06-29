@@ -91,7 +91,7 @@ import {
       : false;
     return (
       <>
-        <button className="btn bg-primary btn-sm" onClick={() => ref.current?.showModal()}>
+        <button className="btn btn-primary btn-sm" onClick={() => ref.current?.showModal()}>
           Withdraw
         </button>
         <dialog ref={ref} className="modal">

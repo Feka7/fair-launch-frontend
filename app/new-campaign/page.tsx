@@ -14,6 +14,7 @@ import { readContract, waitForTransactionReceipt } from "wagmi/actions";
 import { config } from "@/components/Web3Provider";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function Page() {
   const account = useAccount();
@@ -46,13 +47,15 @@ function CreateCampaignForm() {
   const [unvestingStreamEnd, setUnvestingStreamEnd] = useState<string>("");
   const [rewardSupply, setRewardSupply] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string>("");
-  const [campaignURI, setCampaignURI] = useState<string>("");
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [step, setStep] = useState<number>(1);
   const [allowance, setAllowance] = useState<number>(0);
   const [loading, isLoading] = useState<boolean>(false);
   const [tx, setTx] = useState<string>("");
   const totalSupplyRequired = parseFloat(poolSupply) + parseFloat(rewardSupply);
+  const [file, setFile] = useState<File | null>(null);
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   useEffect(() => {
     const isValid = Boolean(
@@ -63,7 +66,9 @@ function CreateCampaignForm() {
         unvestingStreamEnd &&
         rewardSupply &&
         tokenAddress &&
-        campaignURI
+        name &&
+        description &&
+        file
     );
     setIsFormValid(isValid);
   }, [
@@ -74,7 +79,9 @@ function CreateCampaignForm() {
     unvestingStreamEnd,
     rewardSupply,
     tokenAddress,
-    campaignURI,
+    name,
+    description,
+    file
   ]);
 
   const startTimestampUint = Math.floor(
@@ -97,6 +104,44 @@ function CreateCampaignForm() {
       setStep(2);
     } else {
       setStep(1);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file || !description || !name) {
+      console.log("Missing input");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        console.error(result);
+        return;
+      }
+      const formDataMeta = new FormData();
+      formDataMeta.append("name", name);
+      formDataMeta.append("description", description);
+      formDataMeta.append("image", result.uri);
+      const response_meta = await fetch("/api/upload/metadata", {
+        method: "POST",
+        body: formDataMeta,
+      });
+      const result_meta = await response_meta.json();
+      if (!response_meta.ok) {
+        console.error(result);
+        return;
+      }
+      return result_meta.uri as string;
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
 
@@ -137,18 +182,22 @@ function CreateCampaignForm() {
   };
 
   const createCampaign = async () => {
-    const campaignParams = {
-      poolSupply: parseUnits(poolSupply.toString(), 18),
-      startTimestamp: BigInt(startTimestampUint),
-      endTimestamp: BigInt(endTimestampUint),
-      unvestingStreamStart: BigInt(unvestingStreamStartUint),
-      unvestingStreamEnd: BigInt(unvestingStreamEndUint),
-      rewardSupply: parseUnits(rewardSupply.toString(), 18),
-      tokenAddress: tokenAddress as `0x${string}`,
-      campaignURI: campaignURI,
-    };
     try {
       isLoading(true);
+      const uriCampaign = await handleUpload();
+      if(!uriCampaign) {
+        return;
+      }
+      const campaignParams = {
+        poolSupply: parseUnits(poolSupply.toString(), 18),
+        startTimestamp: BigInt(startTimestampUint),
+        endTimestamp: BigInt(endTimestampUint),
+        unvestingStreamStart: BigInt(unvestingStreamStartUint),
+        unvestingStreamEnd: BigInt(unvestingStreamEndUint),
+        rewardSupply: parseUnits(rewardSupply.toString(), 18),
+        tokenAddress: tokenAddress as `0x${string}`,
+        campaignURI: uriCampaign,
+      };
       const tx = await writeContractAsync({
         address: hippodromeAddress,
         abi: hippodromeAbi,
@@ -168,12 +217,14 @@ function CreateCampaignForm() {
         setUnvestingStreamEnd("");
         setRewardSupply("");
         setTokenAddress("");
-        setCampaignURI("");
+        setName("");
+        setDescription("")
+        setFile(null)
       }
     } catch (e) {
       if (e instanceof ContractFunctionExecutionError) {
         console.log(e.shortMessage);
-        toast.error(e.shortMessage)
+        toast.error(e.shortMessage);
         ref.current?.close();
       }
     } finally {
@@ -182,8 +233,57 @@ function CreateCampaignForm() {
   };
 
   return (
-    <>
-      <form className="p-6 bg-base-200 rounded-lg shadow-lg space-y-4 mt-4">
+    <div>
+      <h2 className="text-xl font-bold mt-8">
+        Metadata
+      </h2>
+      <form className="p-6 bg-base-200 rounded-lg shadow-lg space-y-4 mt-2">
+        <div className="grid grid-cols-1 gap-4">
+          <div className="form-control flex-row space-x-3 items-center">
+            {file ? (
+              <Image
+                alt="image"
+                src={URL.createObjectURL(file)}
+                height={128}
+                width={128}
+              />
+            ) : (
+              <span className="bg-base-300 flex flex-col items-center justify-center w-32 h-32 rounded-xl">
+                128x128
+              </span>
+            )}
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="file-input"
+              accept="image/jpeg, image/png, image/gif, image/jpg"
+            />
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Name</span>
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="input input-bordered w-full"
+            />
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Description</span>
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="textarea textarea-bordered w-full h-28"
+            />
+          </div>
+        </div>
+      </form>
+      <h2 className="font-bold mt-8 text-xl">Settings</h2>
+      <form className="p-6 bg-base-200 rounded-lg shadow-lg space-y-4 mt-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-control col-span-2">
             <label className="label">
@@ -262,19 +362,6 @@ function CreateCampaignForm() {
               className="input input-bordered w-full"
             />
           </div>
-          <div className="form-control col-span-2">
-            <label className="label">
-              <span className="label-text">
-                Campaign URI <span className="text-xs">{"(optional)"}</span>
-              </span>
-            </label>
-            <input
-              type="text"
-              value={campaignURI}
-              onChange={(e) => setCampaignURI(e.target.value)}
-              className="input input-bordered w-full"
-            />
-          </div>
         </div>
         <div className="form-control">
           <button
@@ -341,9 +428,6 @@ function CreateCampaignForm() {
                 <p>
                   <strong>Token Address:</strong> {tokenAddress}
                 </p>
-                <p>
-                  <strong>Campaign URI:</strong> {campaignURI}
-                </p>
               </div>
               <button
                 onClick={createCampaign}
@@ -392,6 +476,6 @@ function CreateCampaignForm() {
           </div>
         </div>
       </dialog>
-    </>
+    </div>
   );
 }

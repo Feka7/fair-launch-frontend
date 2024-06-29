@@ -1,17 +1,23 @@
 "use client";
+import AddFundsModal from "@/components/AddFundsModal";
+import ClaimRewardsButton from "@/components/ClaimRewardsButton";
+import Symbol from "@/components/Symbol";
+import WithdrawFundsModal from "@/components/WithdrawFundsModal";
 import { hippodromeAbi, hippodromeAddress } from "@/lib/hippodrome";
+import Image from "next/image";
 import { notFound, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import useSWR from "swr";
 import { formatUnits } from "viem";
 import { useAccount, useReadContract } from "wagmi";
-import Symbol from "@/components/Symbol";
-import AddFundsModal from "@/components/AddFundsModal";
-import WithdrawFundsModal from "@/components/WithdrawFundsModal";
-import ClaimRewardsButton from "@/components/ClaimRewardsButton";
-import { Suspense } from "react";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen skeleton mt-4"></div>}>
+    <Suspense
+      fallback={<div className="flex min-h-screen skeleton mt-4"></div>}
+    >
       <Campaign />
     </Suspense>
   );
@@ -26,23 +32,7 @@ function Campaign() {
   return (
     <>
       <div className="flex flex-col mt-8">
-        <h1 className="text-3xl font-bold">Campaign XYZ</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 bg-base-200 rounded-lg justify-items-center items-center mt-4">
-          <div>
-            <div className="bg-base-300 rounded-xl flex flex-col items-center justify-center w-full p-8">
-              <p>Image</p>
-            </div>
-          </div>
-          <div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry&apos;s standard dummy
-            text ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book.
-          </div>
-          <div>
-            <CampaignInfo id={parseId} />
-          </div>
-        </div>
+        <CampaignInfo id={parseId} />
         <h2 className="text-xl font-bold mt-4">Stats</h2>
         <div className="bg-base-200 rounded-xl p-4">
           <CampaignStake id={parseId} />
@@ -83,11 +73,70 @@ function CampaignInfo({ id }: { id: number }) {
   }
   return (
     <>
-      <p>Token: {data[2].slice(0, 5) + "..." + data[2].slice(-5)}</p>
-      <p>Founder: {data[0].slice(0, 5) + "..." + data[0].slice(-5)}</p>
-      <p>Pool: {data[4].slice(0, 5) + "..." + data[4].slice(-5)}</p>
+      <CampaignName uri={data[11]} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 bg-base-200 rounded-lg justify-items-center items-center mt-4">
+        <CampaignMetadata uri={data[11]} />
+        <div>
+          <p>Token: {data[2].slice(0, 5) + "..." + data[2].slice(-5)}</p>
+          <p>Founder: {data[0].slice(0, 5) + "..." + data[0].slice(-5)}</p>
+          <p>Pool: {data[4].slice(0, 5) + "..." + data[4].slice(-5)}</p>
+        </div>
+      </div>
     </>
   );
+}
+
+function CampaignName({ uri }: { uri: string }) {
+  const { data, error } = useSWR(
+    `/api/metadata?uri=${encodeURIComponent(uri)}`,
+    fetcher
+  );
+
+  if (!data || error) {
+    return (
+      <div className="skeleton w-20 h-10 rounded-xl"></div>
+    );
+  }
+
+  const { name } = data;
+  return <h1 className="text-3xl font-bold">{name}</h1>;
+}
+
+function CampaignMetadata({ uri }: { uri: string }) {
+  const { data, error } = useSWR(
+    `/api/metadata?uri=${encodeURIComponent(uri)}`,
+    fetcher
+  );
+
+  if (!data || error) {
+    return (
+      <div className="flex flex-col w-full h-full rounded-xl skeleton col-span-2"></div>
+    );
+  }
+
+  const { description, image } = data;
+
+  return (
+    <>
+      <div>
+        <CampaignImage uri={image} />
+      </div>
+      <div className="text-sm py-2">{description}</div>
+    </>
+  );
+}
+
+function CampaignImage({ uri }: { uri: string }) {
+  const { data, error } = useSWR(
+    `/api/image?uri=${encodeURIComponent(uri)}`,
+    fetcher
+  );
+
+  if (!data || error) {
+    return <div className="skeleton w-32 h-32"></div>;
+  }
+  const { url } = data;
+  return <Image src={url} width={128} height={128} alt="campaign image" />;
 }
 
 function CampaignStake({ id }: { id: number }) {
