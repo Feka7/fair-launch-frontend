@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <>
       <div className="navbar max-w-7xl mx-auto bg-secondary text-secondary-content rounded-lg mt-2">
-        <div className="navbar-start">Fair launch</div>
+        <div className="navbar-start font-mono font-semibold italic text-lg">hippodrome</div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
             <li>

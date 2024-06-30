@@ -1,6 +1,7 @@
 "use client";
 import AddFundsModal from "@/components/AddFundsModal";
 import ClaimRewardsButton from "@/components/ClaimRewardsButton";
+import ResolveCampaignButton from "@/components/ResolveCampaignButton";
 import Symbol from "@/components/Symbol";
 import WithdrawFundsModal from "@/components/WithdrawFundsModal";
 import { hippodromeAbi, hippodromeAddress } from "@/lib/hippodrome";
@@ -73,8 +74,15 @@ function CampaignInfo({ id }: { id: number }) {
   }
   return (
     <>
-      <CampaignName uri={data[11]} />
-      <div className="grid grid-cols-1 lg:grid-cols-3 bg-base-200 rounded-lg justify-items-center items-center mt-4">
+      <div className="flex w-full items-center">
+        <div className="flex-grow">
+          <CampaignName uri={data[11]} />
+        </div>
+        <div>
+          <ResolveCampaignButton id={id} />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 bg-base-200 rounded-lg justify-items-center items-center mt-4 p-4">
         <CampaignMetadata uri={data[11]} />
         <div>
           <p>Token: {data[2].slice(0, 5) + "..." + data[2].slice(-5)}</p>
@@ -93,9 +101,7 @@ function CampaignName({ uri }: { uri: string }) {
   );
 
   if (!data || error) {
-    return (
-      <div className="skeleton w-20 h-10 rounded-xl"></div>
-    );
+    return <div className="skeleton w-20 h-10 rounded-xl"></div>;
   }
 
   const { name } = data;
@@ -121,7 +127,7 @@ function CampaignMetadata({ uri }: { uri: string }) {
       <div>
         <CampaignImage uri={image} />
       </div>
-      <div className="text-sm py-2">{description}</div>
+      <div className="text-sm">{description}</div>
     </>
   );
 }

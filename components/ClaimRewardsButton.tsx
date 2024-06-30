@@ -17,14 +17,16 @@ export default function ClaimRewardsButton({ id }: Props) {
   const { writeContractAsync } = useWriteContract();
   const [value, setValue] = useState<string>("");
   const [loading, isLoading] = useState<boolean>(false);
-  const { refetch: refetchRewardStatus } = useReadContract(
-    {
-      abi: hippodromeAbi,
-      address: hippodromeAddress,
-      functionName: "getUserRewardStatus",
-      args: [BigInt(id), address!],
-    }
-  );
+  const {
+    data: isResolved,
+    isPending: isPendingResolved,
+    refetch,
+  } = useReadContract({
+    abi: hippodromeAbi,
+    address: hippodromeAddress,
+    functionName: "isCampaignResolved",
+    args: [BigInt(id)],
+  });
   const { data: avaiableRewards, refetch: refetchAvaiableRewards } =
     useReadContract({
       abi: hippodromeAbi,
@@ -32,7 +34,7 @@ export default function ClaimRewardsButton({ id }: Props) {
       functionName: "getAvailableUserRewards",
       args: [address!, BigInt(id)],
     });
-  
+
   const handleClaim = async () => {
     if (value === "0") return;
     try {
@@ -46,7 +48,6 @@ export default function ClaimRewardsButton({ id }: Props) {
       const transactionReceipt = await waitForTransactionReceipt(config, {
         hash: tx,
       });
-      refetchRewardStatus();
       refetchAvaiableRewards();
       toast.success(
         <>
@@ -68,24 +69,29 @@ export default function ClaimRewardsButton({ id }: Props) {
       setValue("");
     }
   };
-  const allowedClaim = !value
-    ? false
-    : avaiableRewards
-    ? avaiableRewards >= parseUnits(value, 6)
-    : false;
-  return (
-    <>
+  if (isPendingResolved)
+    return <div className="w-20 h-10 rounded-xl skeleton"></div>;
+
+  if (!isResolved)
+    return <button className="btn btn-sm btn-disabled">Claim</button>;
+
+  if (Number(avaiableRewards) > 0)
+    return (
       <button
-        className="btn btn-primary btn-xs"
+        className="btn btn-primary btn-sm disabled:bg-primary disabled:text-primary-content"
         onClick={() => handleClaim()}
-        disabled={loading || !allowedClaim}
+        disabled={loading}
       >
         {loading ? (
-          <span className="loading loading-dots loading-md disabled:bg-primary disabled:text-primary-content"></span>
+          <span className="loading loading-dots loading-md"></span>
         ) : (
           <>Claim</>
         )}
       </button>
+    );
+  return (
+    <>
+      <button className="btn btn-disabled btn-sm">Claimed</button>
     </>
   );
 }
