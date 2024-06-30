@@ -10,22 +10,22 @@ export const config = createConfig(
   getDefaultConfig({
     // Your dApps chains
     chains: [
-      //baseSepolia
-      tenderly_fork_chain
+      baseSepolia
+      //tenderly_fork_chain
     ],
     transports: {
       // RPC URL for each chain
-      // [baseSepolia.id]: http(
-      //   process.env.NEXT_PUBLIC_ALCHEMY_URL,
-      // ),
-      [tenderly_fork_chain.id]: http(),
+      [baseSepolia.id]: http(
+        process.env.NEXT_PUBLIC_ALCHEMY_URL,
+      ),
+      //[tenderly_fork_chain.id]: http(),
     },
     ssr: true,
     // Required API Keys
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
 
     // Required App Info
-    appName: "Fair launch",
+    appName: "hippodrome",
 
     // Optional App Info
     // appDescription: "Your App Description",
