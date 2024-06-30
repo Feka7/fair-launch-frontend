@@ -46,6 +46,18 @@ export default function AddFundsModal({ id }: { id: number }) {
     functionName: "getUserStake",
     args: [account.address!, BigInt(id)],
   });
+  const accountRewards = useReadContract({
+    abi: hippodromeAbi,
+    address: hippodromeAddress,
+    functionName: "getUserRewardStatus",
+    args: [BigInt(id), account.address!],
+  });
+  const accountAvailableRewards = useReadContract({
+    abi: hippodromeAbi,
+    address: hippodromeAddress,
+    functionName: "getAvailableUserRewards",
+    args: [account.address!, BigInt(id)],
+  });
   const ref = useRef<HTMLDialogElement>(null);
   const handlePerc = (perc: number) => {
     if (data) {
@@ -69,6 +81,8 @@ export default function AddFundsModal({ id }: { id: number }) {
       refetch();
       refetchCampaign();
       refetchUserStake();
+      accountRewards.refetch();
+      accountAvailableRewards.refetch();
       toast.success(
         <>
           Funds deposited!{" "}
