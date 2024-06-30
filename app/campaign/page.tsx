@@ -170,7 +170,7 @@ function CampaignStake({ id }: { id: number }) {
         </div>
       </div>
       <div className="stat">
-        <div className="stat-title">Raised</div>
+        <div className="stat-title">Raise <span className="text-xs">{"(expected)"}</span></div>
         <div className="stat-value text-primary">
           {formatUnits(data[5], 18)} $
         </div>
@@ -254,7 +254,7 @@ function CampaignRewardsAccount({ id }: { id: number }) {
   return (
     <div className="stats shadow w-full mt-2">
       <div className="stat">
-        <div className="stat-title">Total</div>
+        <div className="stat-title">Total <span className="text-xs">{"(expected)"}</span></div>
         <div className="stat-value text-primary">
           {accountRewards.data ? formatUnits(accountRewards.data[0], 18) : "0"}
           <Symbol id={id} />
