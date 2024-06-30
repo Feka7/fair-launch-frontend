@@ -219,14 +219,6 @@ function CampaignStakeAccount({ id }: { id: number }) {
   return (
     <div className="stats shadow w-full mt-2">
       <div className="stat">
-        <div className="stat-title">Contribution</div>
-        <div className="stat-value text-primary">
-          {accountPercentuage.data && (
-            <>{accountPercentuage.data.toString()} %</>
-          )}
-        </div>
-      </div>
-      <div className="stat">
         <div className="stat-title">Stake</div>
         <div className="stat-value text-primary">
           {accountStake.data && <>{formatUnits(accountStake.data, 6)} $</>}

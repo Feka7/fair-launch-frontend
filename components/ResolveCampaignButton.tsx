@@ -115,7 +115,7 @@ export default function ResolveCampaignButton({ id }: Props) {
   };
   return (
     <div className="flex">
-      <span>Campaing ends in: </span>
+      <span className="mr-1">Campaing ends in:{" "}</span>
       <Countdown
         date={new Date(Number(campaign.data[7]) * 1000)}
         renderer={renderer}
